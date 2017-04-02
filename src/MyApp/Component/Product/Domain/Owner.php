@@ -5,7 +5,7 @@ namespace MyApp\Component\Product\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="\MyApp\Bundle\ProductBundle\Owner\Repository\OwnerRepository")
+ * @ORM\Entity(repositoryClass="\MyApp\Bundle\ProductBundle\Owner\Repository\OwnerRepositoryImpl")
  * @ORM\Table(name="owner")
  */
 class Owner

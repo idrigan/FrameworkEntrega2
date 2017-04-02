@@ -5,7 +5,7 @@ namespace MyApp\Component\Product\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="\MyApp\Bundle\ProductBundle\Owner\Repository\ProductRepositoryImpl")
  * @ORM\Table(name="product")
  */
 class Product
@@ -38,7 +38,7 @@ class Product
      */
     private $owner;
 
-    public function __construct(string $name, float $price, string $description, Owner $owner)
+    public function __construct( $name, $price,  $description, Owner $owner)
     {
         $this->name = $name;
         $this->price = $price;

@@ -2,7 +2,8 @@
 
 namespace MyApp\Bundle\ProductBundle\Product\Controller;
 
-use MyApp\Component\Product\Domain\Product;
+use MyApp\Component\Product\Application\Usecase\CreateProductUseCase;
+use MyApp\Component\Product\Application\Usecase\GetOwnerUseCase;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,16 +21,21 @@ class CreateProductController extends Controller
         $description = $json['description'];
         $ownerId = $json['ownerId'];
 
-        $owner = $this->getDoctrine()->getRepository('\MyApp\Component\Product\Domain\Owner')->findOneBy(['id' => $ownerId]);
 
-        $product = new Product((string)$name, (float)$price, (string)$description, $owner);
+        $em = $this->getDoctrine()->getEntityManager();
 
-        $em = $this->getDoctrine()->getManager();
+        $getOwnerUseCase = new GetOwnerUseCase( $em->getRepository('MyApp\Component\Product\Domain\Owner') );
 
-        $em->persist($product);
-        $em->flush();
+        $owner = $getOwnerUseCase->execute($ownerId);
 
-        return new Response('', 201);
+        $createProductCase = new CreateProductUseCase( $em->getRepository('MyApp\Component\Product\Domain\Product')  );
+
+        $createProductCase->execute((string)$name, (float)$price, (string)$description, $owner);
+
+         $em->flush();
+
+
+        return new Response('Crear Producto', 201);
 
     }
 

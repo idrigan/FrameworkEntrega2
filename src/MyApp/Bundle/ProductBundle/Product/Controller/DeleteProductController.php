@@ -2,6 +2,7 @@
 
 namespace MyApp\Bundle\ProductBundle\Product\Controller;;
 
+use MyApp\Component\Product\Application\Usecase\DeleteProductUseCase;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -10,14 +11,15 @@ class DeleteProductController extends Controller
 
     public function execute($id)
     {
-        $em = $this->getDoctrine()->getManager();
 
-       $product = $em->getReference('\MyApp\Component\Product\Domain\Product', $id);
+        $em = $this->getDoctrine()->getEntityManager();
+        $deleteProductUseCase = new DeleteProductUseCase( $em->getRepository('MyApp\Component\Product\Domain\Product') );
 
-       $em->remove($product);
+        $deleteProductUseCase->execute($id);
+
        $em->flush();
 
-       return new Response('', 200);
+       return new Response('Producto eliminado', 200);
     }
 
 }

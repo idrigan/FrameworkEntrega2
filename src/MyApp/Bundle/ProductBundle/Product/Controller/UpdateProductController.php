@@ -2,6 +2,7 @@
 
 namespace MyApp\Bundle\ProductBundle\Product\Controller;
 
+use MyApp\Component\Product\Application\Usecase\UpdateProductUseCase;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,16 +15,19 @@ class UpdateProductController extends Controller
 
         $json = json_decode($request->getContent(), true);
 
-        $product = $this->getDoctrine()->getRepository('\MyApp\Component\Product\Domain\Product')->findOneBy(['id' => $id]);
+        $em = $this->getDoctrine()->getEntityManager();
 
-        $product->setName($json['name']);
-        $product->setPrice($json['price']);
-        $product->setDescription($json['description']);
+        $updateProductUseCase = new UpdateProductUseCase( $em->getRepository('MyApp\Component\Product\Domain\Product') );
 
-        $em = $this->getDoctrine()->getManager();
+        $name = $json['name'];
+        $price = $json['price'];
+        $description = $json['description'];
+        
+        $updateProductUseCase->execute((string)$name,(float)$price,(string)$description,(int)$id);
+
         $em->flush();
 
-        return new Response('', 200);
+        return new Response('Producto Actualizado', 200);
 
     }
 
